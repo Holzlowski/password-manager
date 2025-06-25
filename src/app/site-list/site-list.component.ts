@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { PasswordManagerService } from '../password-manager.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-site-list',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './site-list.component.html',
   styleUrl: './site-list.component.css'
 })
