@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PasswordManagerService } from '../password-manager.service';
-
 import { CommonModule } from '@angular/common';
 
 import { AES, enc } from 'crypto-js';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { environment } from '../../enviroment/enviroment';
 
 @Component({
   selector: 'app-password-list',
@@ -111,13 +111,13 @@ export class PasswordListComponent {
   }
 
   encryptPassword(password: string) {
-    const secretKey = 'YxrIpG5llqpw6riIVnLa2SMWFJeMfuL2';
+    const secretKey = environment.secretKey;
     const encryptedPassword = AES.encrypt(password, secretKey).toString();
     return encryptedPassword;
   }
 
   decryptPassword(password: string) {
-    const secretKey = 'YxrIpG5llqpw6riIVnLa2SMWFJeMfuL2';
+    const secretKey = environment.secretKey;
     const decryptedPassword = AES.decrypt(password, secretKey).toString(enc.Utf8);;
     return decryptedPassword;
   }
