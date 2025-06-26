@@ -33,7 +33,13 @@ export class SiteListComponent {
     this.successMessage = message;
   }
 
-  onSubmit(values: object) {
+  onSubmit(values: any) {
+    // Prüfe, ob eines der Felder leer ist
+    if (!values.siteName || !values.siteURL || !values.siteImgURL) {
+      this.showAlert("Bitte alle Felder ausfüllen!");
+      return;
+    }
+
     if (this.formState == "Add new") {
       this.passwordManagerService.addSite(values)
         .then(() => {

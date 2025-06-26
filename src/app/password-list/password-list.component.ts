@@ -58,12 +58,17 @@ export class PasswordListComponent {
     this.passwordId = '';
   }
 
-  onSubmit(values: any) {
-    //console.log("Form submitted with values before: ", values);
+    onSubmit(values: any) {
+    // Prüfe, ob eines der Felder leer ist
+    if (!values.email || !values.username || !values.password ||
+        values.email.trim() === '' || values.username.trim() === '' || values.password.trim() === '') {
+      this.showAlert("Bitte alle Felder ausfüllen!");
+      return;
+    }
+  
     const encryptedPassword = this.encryptPassword(values.password);
     values.password = encryptedPassword; // Encrypt the password before saving
-    //console.log("Form submitted with values after: ", values);
-
+  
     if (this.formState == "Add new") {
       this.passwordService.addPassword(values, this.siteId)
         .then(() => {
