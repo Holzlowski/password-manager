@@ -4,10 +4,11 @@ import { PasswordManagerService } from '../password-manager.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-site-list',
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule, NavbarComponent],
   templateUrl: './site-list.component.html',
   styleUrl: './site-list.component.css'
 })
