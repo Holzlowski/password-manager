@@ -5,6 +5,8 @@ import { PasswordManagerService } from '../password-manager.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
+import { AES, enc } from 'crypto-js';
+
 @Component({
   selector: 'app-password-list',
   imports: [FormsModule, CommonModule],
@@ -18,7 +20,7 @@ export class PasswordListComponent {
   siteURL!: string;
   siteImgURL!: string;
 
-  passwordList!: Observable<Array<any>>;
+  passwordList!: Array<any>;
 
   email: string = '';
   username: string = '';
@@ -26,6 +28,9 @@ export class PasswordListComponent {
   passwordId: string = '';
 
   formState: string = "Add new";
+
+  isSuccess: boolean = false;
+  successMessage: string = '';
 
   constructor(private route: ActivatedRoute, private passwordService: PasswordManagerService) {
 
@@ -38,6 +43,12 @@ export class PasswordListComponent {
     this.loadPasswords();
   }
 
+  showAlert(message: string) {
+    this.isSuccess = true;
+    this.successMessage = message;
+  }
+
+
   resetForm() {
     this.formState = "Add new";
     this.email = '';
@@ -46,12 +57,16 @@ export class PasswordListComponent {
     this.passwordId = '';
   }
 
-  onSubmit(values: object) {
-    //console.log("Form submitted with values: ", values);
+  onSubmit(values: any) {
+    //console.log("Form submitted with values before: ", values);
+    const encryptedPassword = this.encryptPassword(values.password);
+    values.password = encryptedPassword; // Encrypt the password before saving
+    //console.log("Form submitted with values after: ", values);
+
     if (this.formState == "Add new") {
       this.passwordService.addPassword(values, this.siteId)
         .then(() => {
-          console.log("Password added successfully!");
+          this.showAlert("Data added successfully!");
           this.resetForm();
         })
         .catch((error) => {
@@ -60,7 +75,7 @@ export class PasswordListComponent {
     } else if (this.formState == "Edit") {
       this.passwordService.updatePassword(this.siteId, this.passwordId, values)
         .then(() => {
-          console.log("Data updated successfully!");
+          this.showAlert("Data updated successfully!");
           this.resetForm();
         })
         .catch((error) => {
@@ -70,7 +85,9 @@ export class PasswordListComponent {
   }
 
   loadPasswords() {
-    this.passwordList = this.passwordService.loadPasswords(this.siteId);
+    this.passwordService.loadPasswords(this.siteId).subscribe(val => {
+      this.passwordList = val;
+    });
   }
 
   editPassword(email: string, username: string, password: string, id: string) {
@@ -84,11 +101,28 @@ export class PasswordListComponent {
   deletePassword(passwordId: string) {
     this.passwordService.deletePassword(this.siteId, passwordId)
       .then(() => {
-        console.log("Password deleted successfully!");
-        this.resetForm();
+        this.showAlert("Password deleted successfully!");
+        //this.resetForm();
       })
       .catch((error) => {
         console.error("Error deleting password: ", error);
       });
+  }
+
+  encryptPassword(password: string) {
+    const secretKey = 'YxrIpG5llqpw6riIVnLa2SMWFJeMfuL2';
+    const encryptedPassword = AES.encrypt(password, secretKey).toString();
+    return encryptedPassword;
+  }
+
+  decryptPassword(password: string) {
+    const secretKey = 'YxrIpG5llqpw6riIVnLa2SMWFJeMfuL2';
+    const decryptedPassword = AES.decrypt(password, secretKey).toString(enc.Utf8);;
+    return decryptedPassword;
+  }
+
+  onDecrypt(password: string, index: number) {
+    const decryptedPassword = this.decryptPassword(password);
+    this.passwordList[index].password = decryptedPassword; // Update the password in the list with decrypted value
   }
 }
