@@ -33,6 +33,14 @@ export class SiteListComponent {
     this.successMessage = message;
   }
 
+  resetForm() {
+    this.formState = 'Add new';
+    this.siteName = '';
+    this.siteURL = '';
+    this.siteImgURL = '';
+    this.siteId = '';
+  }
+
   onSubmit(values: any) {
     // Prüfe, ob eines der Felder leer ist
     if (!values.siteName || !values.siteURL || !values.siteImgURL) {
@@ -83,3 +91,4 @@ export class SiteListComponent {
       });
   }
 }
+

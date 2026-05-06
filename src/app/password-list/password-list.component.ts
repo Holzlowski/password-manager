@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PasswordManagerService } from '../password-manager.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { environment } from '../../enviroment/enviroment';
 
 @Component({
   selector: 'app-password-list',
-  imports: [FormsModule, CommonModule, NavbarComponent],
+  imports: [FormsModule, CommonModule, RouterModule, NavbarComponent],
   templateUrl: './password-list.component.html',
   styleUrl: './password-list.component.css'
 })
@@ -22,6 +22,7 @@ export class PasswordListComponent {
   siteImgURL!: string;
 
   passwordList!: Array<any>;
+  revealedPasswords: Record<string, string> = {};
 
   email: string = '';
   username: string = '';
@@ -93,6 +94,7 @@ export class PasswordListComponent {
   loadPasswords() {
     this.passwordService.loadPasswords(this.siteId).subscribe(val => {
       this.passwordList = val;
+      this.revealedPasswords = {};
     });
   }
 
@@ -107,6 +109,7 @@ export class PasswordListComponent {
   deletePassword(passwordId: string) {
     this.passwordService.deletePassword(this.siteId, passwordId)
       .then(() => {
+        delete this.revealedPasswords[passwordId];
         this.showAlert("Password deleted successfully!");
         //this.resetForm();
       })
@@ -127,8 +130,16 @@ export class PasswordListComponent {
     return decryptedPassword;
   }
 
-  onDecrypt(password: string, index: number) {
+  togglePassword(password: string, id: string) {
+    if (this.revealedPasswords[id]) {
+      delete this.revealedPasswords[id];
+      return;
+    }
+
     const decryptedPassword = this.decryptPassword(password);
-    this.passwordList[index].password = decryptedPassword; // Update the password in the list with decrypted value
+    if (decryptedPassword) {
+      this.revealedPasswords[id] = decryptedPassword;
+    }
   }
 }
+

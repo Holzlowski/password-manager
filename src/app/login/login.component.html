@@ -1,37 +1,47 @@
-<section class="bg-gray-50">
-    <div class=" flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen">
-        <div class="w-full border-4 border-gray-900 bg-white rounded-lg shadow max-w-md">
-            <div class="p-6 space-y-6">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Log in to your account
-                </h1>
+<section class="login-page">
+  <div class="login-hero">
+    <p class="eyebrow">Private access</p>
+    <h1>Protect every login in one calm command center.</h1>
+    <p>
+      A polished vault experience for sites, users and encrypted credentials with a focused professional interface.
+    </p>
 
-                <div *ngIf="isError" class="p-5 my-3 bg-red-100 text-red-100">
-                    The Username or Password is incorrect.
-                </div>
-
-                <form #f="ngForm" class="space-y-6" (ngSubmit)="onSubmit(f.value)">
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900">
-                            Your email
-                        </label>
-                        <input type="email" ngModel name="email" placeholder="name@company.com"
-                            class="block w-full p-2.5 text-sm bg-gray-50 border-4 border-gray-900 text-gray-900 rounded-lg">
-
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900">
-                            Password
-                        </label>
-                        <input type="password" ngModel name="password" placeholder="***********"
-                            class="block w-full p-2.5 text-sm bg-gray-50 border-4 border-gray-900 text-gray-900 rounded-lg">
-
-                    </div>
-                    <button class="w-full text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        Sign in
-                    </button>
-                </form>
-            </div>
-        </div>
+    <div class="trust-strip" aria-label="Security highlights">
+      <span>Encrypted storage</span>
+      <span>Fast access</span>
+      <span>Clean control</span>
     </div>
+  </div>
+
+  <div class="login-card panel-strong">
+    <div class="card-heading">
+      <span class="brand-mark">H</span>
+      <div>
+        <p class="eyebrow">Welcome back</p>
+        <h2>Sign in</h2>
+      </div>
+    </div>
+
+    <div class="login-hint">
+      Use the account that is registered in Firebase Authentication for this password manager.
+    </div>
+
+    <div *ngIf="isError" class="alert alert-error">
+      The username or password is incorrect.
+    </div>
+
+    <form #f="ngForm" class="form-grid" (ngSubmit)="onSubmit(f.value)">
+      <label class="field">
+        <span>Email</span>
+        <input type="email" ngModel name="email" placeholder="name@company.com" autocomplete="email">
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" ngModel name="password" placeholder="Enter your password" autocomplete="current-password">
+      </label>
+
+      <button class="btn btn-primary" type="submit">Sign in securely</button>
+    </form>
+  </div>
 </section>

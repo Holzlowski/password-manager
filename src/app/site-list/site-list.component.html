@@ -1,75 +1,87 @@
 <app-navbar></app-navbar>
-<div class="container mx-auto my-16">
-    <h1 class="text-5xl mt-0 mb-5">Holzlowskis Password Manager</h1>
-    <!-- <p class="mb-5">Hallo</p> -->
-    <button class="mb-5 mx-0.5 px-5 py-3 text-sm bg-gray-900 text-white shadow rounded-md">
-        Add New Site
-    </button>
 
-    <!-- alert -->
-    <div *ngIf="isSuccess" class="p-5 my-3 bg-teal-100 text-teal-900">
-        {{successMessage}}
+<main class="page-shell sites-page">
+  <section class="hero-row">
+    <div>
+      <p class="eyebrow">Vault overview</p>
+      <h1 class="page-title">Password Manager</h1>
+      <p class="page-copy">
+        Manage every saved site from a clean dashboard with fast editing, clear previews and a focused credential workflow.
+      </p>
+    </div>
+    <a class="btn btn-primary" href="#site-form">Add site</a>
+  </section>
+
+  <div *ngIf="isSuccess" class="alert alert-success status-message">
+    {{successMessage}}
+  </div>
+
+  <section id="site-form" class="site-editor panel-strong">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Site profile</p>
+        <h2>{{formState}} Site</h2>
+      </div>
+      <span class="form-badge">Secure metadata</span>
     </div>
 
-    <!-- Add New Site -->
+    <form #f="ngForm" (ngSubmit)="onSubmit(f.value)" class="form-grid site-form-grid">
+      <label class="field">
+        <span>Site name</span>
+        <input [(ngModel)]="siteName" type="text" name="siteName" placeholder="Example Inc.">
+      </label>
 
-    <div class="px-20 py-10 mb-10 my-5 border-4 border-gray-900">
-        <h2 class="" text-3xl text-center> {{formState}} Site</h2>
-        <p class="text-center">You can add a new site from the below form</p>
-        <form #f="ngForm" (ngSubmit)="onSubmit(f.value)">
-            <div class="flex flex-col">
-                <label class="text-lg font-medium mb-2"> Site Name</label>
-                <input [(ngModel)]='siteName' type="text" name="siteName"
-                    class="border-2 border-gray-900 p-2 rounded-lg w-full">
-            </div>
+      <label class="field">
+        <span>Site URL</span>
+        <input [(ngModel)]="siteURL" type="text" name="siteURL" placeholder="https://example.com">
+      </label>
 
-            <div class="flex flex-col">
-                <label class="text-lg font-medium mb-2"> Site URL</label>
-                <input [(ngModel)]='siteURL' type="text" name="siteURL"
-                    class="border-2 border-gray-900 p-2 rounded-lg w-full">
-            </div>
+      <label class="field wide-field">
+        <span>Image URL</span>
+        <input [(ngModel)]="siteImgURL" type="text" name="siteImgURL" placeholder="https://example.com/logo.png">
+      </label>
 
-            <div class="flex flex-col">
-                <label class="text-lg font-medium mb-2"> Site Image URL</label>
-                <input [(ngModel)]='siteImgURL' type="text" name="siteImgURL"
-                    class="border-2 border-gray-900 p-2 rounded-lg w-full">
-            </div>
+      <div class="form-actions wide-field">
+        <button class="btn btn-primary" type="submit">{{formState}} Site</button>
+        <button class="btn btn-secondary" type="button" (click)="resetForm()">Cancel</button>
+      </div>
+    </form>
+  </section>
 
-            <button class="mt-10 mx-0.5 px-5 py-3 text-sm bg-gray-900 text-white shadow rounded-md">
-                {{formState}} Site
-            </button>
+  <section class="site-grid" aria-label="Saved sites">
+    <article *ngFor="let site of allSites | async" class="site-card panel"
+      [class.cover-image]="site.siteName?.toLowerCase().includes('godaddy') || site.siteName?.toLowerCase().includes('go daddy')">
+      <button type="button" (click)="deleteSite(site.id)" class="card-delete" aria-label="Delete site" title="Delete site">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18" />
+          <path d="M8 6V4h8v2" />
+          <path d="M19 6l-1 14H6L5 6" />
+          <path d="M10 11v5" />
+          <path d="M14 11v5" />
+        </svg>
+      </button>
 
-            <button class="mt-10 mx-0.5 px-5 py-3 text-sm border-2 border-gray-900 text-gray-900 shadow rounded-md">
-                Cancel
-            </button>
+      <div class="site-image-wrap">
+        <img [src]="site.siteImgURL" [alt]="site.siteName">
+      </div>
 
-        </form>
-    </div>
+      <div class="site-card-body">
+        <h3>{{ site.siteName }}</h3>
+        <span class="url-pill">{{site.siteURL}}</span>
 
-    <div class="grid grid-cols-4 gap-5">
-        <div *ngFor="let site of allSites | async" class="shadow-lg border-2 border-gray-900">
-            <img [src]="site.siteImgURL" alt="">
-            <h3 class="p-3 text-xl font-bold">{{ site.siteName }}</h3>
-            <div class="w-60 m-3 px-3 bg-blue-200 text-blue-800 rounded-lg text-sm">
-                {{site.siteURL}}
-            </div>
+        <div class="card-actions">
+          <button type="button" routerLink="/password-list"
+            [queryParams]="{id: site.id, siteName: site.siteName, siteURL: site.siteURL, siteImgURL: site.siteImgURL}"
+            class="btn btn-primary">
+            Passwords
+          </button>
 
-            <button type="button" routerLink="/password-list"
-                [queryParams]="{id: site.id, siteName: site.siteName, siteURL: site.siteURL, siteImgURL: site.siteImgURL}"
-                class="my-3 ml-3 mx-0.5 px-5 py-3 text-sm bg-gray-900 text-white shadow rounded-md">
-                Add New Password
-            </button>
-
-            <button (click)="editSite(site.siteName, site.siteURL, site.siteImgURL, site.id)"
-                class="my-3 mx-0.5 px-5 py-3 text-sm border-2 border-gray-900 text-gray-900 shadow rounded-md">
-                Edit
-            </button>
-
-            <button (click)="deleteSite(site.id)"
-                class="my-3 mx-0.5 px-5 py-3 text-sm border-2 border-gray-900 text-gray-900 shadow rounded-md">
-                Delete
-            </button>
-
+          <button type="button" (click)="editSite(site.siteName, site.siteURL, site.siteImgURL, site.id)"
+            class="btn btn-secondary">
+            Edit
+          </button>
         </div>
-
-    </div>
+      </div>
+    </article>
+  </section>
+</main>

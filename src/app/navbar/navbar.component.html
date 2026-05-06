@@ -1,7 +1,14 @@
-<nav class="bg-white border-2 border-gray-900 px-2 py-3 rounded shadow-md">
-    <div class="container flex flex-wrap items-center justify-between mx-auto">
-        <span class="self-center text-xl font-semibold"> Holzlowskis Password Manager</span>
-        <button routerLink="/"
-        class="text-white bg-gray-900 rounded-lg text-sm px-5 py-3"> Logout </button>
-    </div>
+<nav class="top-nav">
+  <div class="nav-brand" routerLink="/site-list">
+    <span class="brand-mark">H</span>
+    <span>
+      <strong>Holzlowski Vault</strong>
+      <small>Password Manager</small>
+    </span>
+  </div>
+
+  <div class="nav-actions">
+    <span class="status-dot">Secure session</span>
+    <button routerLink="/" class="btn btn-secondary" type="button">Logout</button>
+  </div>
 </nav>
